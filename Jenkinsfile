@@ -24,15 +24,16 @@ pipeline {
                 }
             }
         }
-        stage('Push image to Docker Hub'){
-            steps{
-                script{
-                   withCredentials([string(credentialsId: '96c86941-6323-4824-bffd-0187728a5366	', variable: 'dhpsw')]) {
-                        sh 'docker login -u braulinho -p ${dhpsw}'
-                   }
-                   sh 'docker push braulinho/tingesobackend:latest'
+        stage('Push image to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerCredentials', usernameVariable: 'dhpUser', passwordVariable: 'dhpsw')]) {
+                        sh 'docker login -u $dhpUser -p $dhpsw'
+                    }
+                    sh 'docker push braulinho/tingesobackend:latest'
                 }
             }
         }
+
     }
 }

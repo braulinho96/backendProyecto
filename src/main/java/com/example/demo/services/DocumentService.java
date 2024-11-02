@@ -11,15 +11,12 @@ import java.util.ArrayList;
 public class DocumentService {
     @Autowired
     DocumentRepository documentRepository;
-
     public ArrayList<DocumentEntity> getDocumentByIdLoan(Long id){
         return documentRepository.findByIdLoan(id);
     }
-
     public DocumentEntity saveDocument(DocumentEntity uploadedDocument){
         return documentRepository.save(uploadedDocument);
     }
-
     public boolean deleteDocument(Long id) throws Exception{
         try{
             documentRepository.deleteById(id);
@@ -28,5 +25,4 @@ public class DocumentService {
             throw new Exception(e.getMessage());
         }
     }
-
 }
