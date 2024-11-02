@@ -7,7 +7,7 @@ pipeline {
         stage('Build maven'){
             steps{
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/braulinho96/backendProyecto']])
-                bat 'mvn clean package'
+                sh 'mvn clean package'
             }
         }
 
@@ -20,7 +20,7 @@ pipeline {
         stage('Build docker image'){
             steps{
                 script{
-                    bat 'docker build -t braulinho/tingesobackend:latest .'
+                    sh 'docker build -t braulinho/tingesobackend:latest .'
                 }
             }
         }
@@ -28,9 +28,9 @@ pipeline {
             steps{
                 script{
                    withCredentials([string(credentialsId: '96c86941-6323-4824-bffd-0187728a5366	', variable: 'dhpsw')]) {
-                        bat 'docker login -u braulinho -p %dhpsw%'
+                        sh 'docker login -u braulinho -p ${dhpsw}'
                    }
-                   bat 'docker push braulinho/tingesobackend:latest'
+                   sh 'docker push braulinho/tingesobackend:latest'
                 }
             }
         }
