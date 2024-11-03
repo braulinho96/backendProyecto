@@ -2,10 +2,12 @@ package com.example.demo.services;
 
 import com.example.demo.entities.UserEntity;
 import com.example.demo.repositories.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
@@ -52,29 +54,26 @@ class UserServiceTest {
 
     @Test
     void testSaveUser_Success() {
-        when(userRepository.findByRut(user.getRut())).thenReturn(null);
-        when(userRepository.save(user)).thenReturn(user);
+        // Configuración del mock para devolver null cuando se busca el RUT, indicando que el usuario no existe
+        Mockito.when(userRepository.findByRut(user.getRut())).thenReturn(null);
+        Mockito.when(userRepository.save(user)).thenReturn(user);
+
+        // Ejecución y verificación
         UserEntity result = userService.saveUser(user);
-        assertEquals(user, result);
-        verify(userRepository, times(1)).save(user);
+        Assertions.assertEquals(user, result);
+        Mockito.verify(userRepository, Mockito.times(1)).save(user);
     }
 
     @Test
     void testSaveUser_AlreadyExists() {
-        when(userRepository.findByRut(user.getRut())).thenReturn(user);
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.saveUser(user);
-        });
-        assertEquals("The user is already in the database", exception.getMessage());
-    }
+        // Configuración del mock para devolver un usuario cuando se busca el RUT, indicando que el usuario ya existe
+        Mockito.when(userRepository.findByRut(user.getRut())).thenReturn(user);
 
-    @Test
-    void testSaveUser_InvalidRole() {
-        user.setId_rol(1); // Invalid role
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        // Ejecución y verificación de excepción
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             userService.saveUser(user);
         });
-        assertEquals("You are not allowed to create an executive or admin user.", exception.getMessage());
+        Assertions.assertEquals("The user is already in the database", exception.getMessage());
     }
 
     @Test

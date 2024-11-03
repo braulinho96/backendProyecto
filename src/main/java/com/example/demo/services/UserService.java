@@ -16,10 +16,7 @@ public class UserService {
         return userRepository.findByRut(rut);
     }
     public UserEntity saveUser(UserEntity user) {
-        // Verify that the user have
-        if (user.getId_rol() != 2) {
-            throw new IllegalArgumentException("You are not allowed to create an executive or admin user.");
-        }
+
         if (userRepository.findByRut(user.getRut()) != null) {
             throw new IllegalArgumentException("The user is already in the database");
         }
